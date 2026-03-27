@@ -31,3 +31,7 @@ flutter pub get
 
 ````bash
 flutter run
+````
+![img.png](imagenes/img.png)
+![img_1.png](imagenes/img_1.png)
+![img_2.png](imagenes/img_2.png)
