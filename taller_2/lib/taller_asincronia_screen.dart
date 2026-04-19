@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:isolate';
 import 'package:flutter/material.dart';
 
-///Función para Isolate
+/// --- Función de Alto Nivel para Isolate ---
 void _heavyTask(SendPort sendPort) {
   int total = 0;
   for (int i = 0; i < 1000000000; i++) {
     total += i;
   }
-  // Enviamos el resultado de vuelta al hilo principal
   sendPort.send(total);
 }
 
@@ -32,6 +31,7 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
   // --- Estado Módulo Isolate ---
   bool _isIsolateRunning = false;
   String _isolateResult = "Sin calcular";
+  String _executionTime = ""; // Variable para guardar el tiempo de ejecución
 
   @override
   void dispose() {
@@ -47,7 +47,6 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
       _futureStatus = "Cargando...";
     });
 
-    debugPrint("Flujo: Durante la ejecución (Future.delayed)");
     await Future.delayed(const Duration(seconds: 3));
 
     if (mounted) {
@@ -79,44 +78,48 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
     });
   }
 
-  // --- Lógica Isolate ---
+  // --- Lógica Isolate con Medición de Tiempo ---
   Future<void> _runIsolateTask() async {
     setState(() {
       _isIsolateRunning = true;
       _isolateResult = "Calculando en 2do plano...";
+      _executionTime = "";
     });
 
-    // Puerto para recibir la respuesta del Isolate
+    // Iniciamos el cronómetro de precisión
+    final stopwatch = Stopwatch()..start();
+
     final receivePort = ReceivePort();
 
-    // Spawning del Isolate: el hilo principal sigue libre para el cronómetro
-    await Isolate.spawn(_heavyTask, receivePort.sendPort);
+    try {
+      await Isolate.spawn(_heavyTask, receivePort.sendPort);
 
-    // Escuchamos el primer mensaje (el resultado)
-    receivePort.listen((message) {
+      final result = await receivePort.first;
+      stopwatch.stop(); // Detenemos al recibir el resultado
+
       if (mounted) {
         setState(() {
-          _isolateResult = "Resultado: $message";
           _isIsolateRunning = false;
+          _isolateResult = "Resultado: $result";
+          // Formateamos el tiempo a segundos con dos decimales
+          _executionTime = "Tiempo: ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)}s";
         });
       }
+    } catch (e) {
+      debugPrint("Error en Isolate: $e");
+    } finally {
       receivePort.close();
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     const Color scaffoldBg = Color(0xFFF5F5F7);
-    const TextStyle headerStyle = TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-        color: Colors.black87
-    );
 
     return Scaffold(
       backgroundColor: scaffoldBg,
       appBar: AppBar(
-        title: const Text("Asincronía en Flutter", style: TextStyle(color: Colors.black87)),
+        title: const Text("Asincronía en Flutter", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
         backgroundColor: scaffoldBg,
         elevation: 0,
         centerTitle: true,
@@ -177,17 +180,20 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
 
               // Módulo 3: Isolate
               _buildCard(
-                title: "Módulo Isolate (Heavy Load)",
+                title: "Módulo Isolate (Carga Pesada)",
                 child: Column(
                   children: [
-                    const Text(
-                      "Sumar 1 a 1,000,000,000",
-                      style: TextStyle(color: Colors.black54),
-                    ),
+                    const Text("Iterador", style: TextStyle(color: Colors.black54)),
                     const SizedBox(height: 12),
-                    _isIsolateRunning
-                        ? const LinearProgressIndicator()
-                        : Text(_isolateResult, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    if (_isIsolateRunning) ...[
+                      const LinearProgressIndicator(),
+                      const SizedBox(height: 8),
+                    ],
+                    Text(_isolateResult, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    if (_executionTime.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(_executionTime, style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w500)),
+                    ],
                     const SizedBox(height: 16),
                     _buildButton(
                       label: "Ejecutar en Isolate",
@@ -204,8 +210,7 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
     );
   }
 
-  // --- Componentes UI Reutilizables ---
-
+  // --- Componentes UI ---
   Widget _buildCard({required String title, required Widget child}) {
     return Container(
       width: double.infinity,
@@ -214,13 +219,7 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,12 +232,7 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
     );
   }
 
-  Widget _buildButton({
-    required String label,
-    required VoidCallback? onPressed,
-    required IconData icon,
-    bool isSecondary = false,
-  }) {
+  Widget _buildButton({required String label, required VoidCallback? onPressed, required IconData icon, bool isSecondary = false}) {
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 18),
@@ -248,7 +242,6 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
         foregroundColor: isSecondary ? Colors.black87 : Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }
