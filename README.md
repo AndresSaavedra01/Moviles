@@ -1,37 +1,27 @@
-# Taller 1 Flutter
+# Flutter Concurrency Demo
 
-## Descripción
-Este taller consiste en el desarrollo de una aplicación en **Flutter** con temática del videojuego **ULTRAKILL**, aplicando conceptos básicos de UI como:
+## 📌 Conceptos
 
-- Uso de `StatefulWidget` y `setState()`
-- Manejo de layouts con `Column`, `Row`, `Padding`
-- Uso de widgets como:
-    - `Container`
-    - `ListView`
-    - `Stack`
-    - `ElevatedButton`
-- Carga de imágenes locales (`assets`) y desde internet (`network`)
-- Aplicación de estilos personalizados (tema oscuro)
+### 1. Future / async / await
+- Permite ejecutar tareas asincrónicas sin bloquear la UI.
+- Usado para llamadas a APIs o simulaciones con Future.delayed.
 
-La app incluye una pantalla principal interactiva donde se puede cambiar el título dinámicamente y visualizar información del juego.
+### 2. Timer
+- Ejecuta código repetidamente cada intervalo de tiempo.
+- Ideal para cronómetros o actualizaciones en tiempo real.
+- Debe cancelarse en dispose().
+
+### 3. Isolate
+- Permite ejecutar tareas pesadas sin bloquear el hilo principal.
+- Usa memoria separada y comunicación por mensajes.
+
 
 ---
 
-## Pasos para ejecutar el proyecto
+## Cuándo usar cada uno
 
-1. Clonar o descargar el proyecto
-
-2. Abrir una terminal en la carpeta del proyecto
-
-3. Obtener dependencias:
-```bash
-flutter pub get
-```
-4. Ejecutar la aplicación:
-
-````bash
-flutter run
-````
-![img.png](imagenes/img.png)
-![img_1.png](imagenes/img_1.png)
-![img_2.png](imagenes/img_2.png)
+| Herramienta | Uso |
+|------------|-----|
+| Future / async | I/O, APIs, archivos |
+| Timer | eventos periódicos |
+| Isolate | CPU pesado |
