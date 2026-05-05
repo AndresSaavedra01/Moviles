@@ -1,27 +1,21 @@
-# Flutter Concurrency Demo
+# 📱 Distribución de APK con Firebase App Distribution
 
-## 📌 Conceptos
-
-### 1. Future / async / await
-- Permite ejecutar tareas asincrónicas sin bloquear la UI.
-- Usado para llamadas a APIs o simulaciones con Future.delayed.
-
-### 2. Timer
-- Ejecuta código repetidamente cada intervalo de tiempo.
-- Ideal para cronómetros o actualizaciones en tiempo real.
-- Debe cancelarse en dispose().
-
-### 3. Isolate
-- Permite ejecutar tareas pesadas sin bloquear el hilo principal.
-- Usa memoria separada y comunicación por mensajes.
-
+## 📌 Descripción
+Este proyecto implementa la distribución de una aplicación Flutter mediante Firebase App Distribution, permitiendo compartir builds con testers y validar actualizaciones.
 
 ---
 
-## Cuándo usar cada uno
+## 🚀 Flujo del proceso
 
-| Herramienta | Uso |
-|------------|-----|
-| Future / async | I/O, APIs, archivos |
-| Timer | eventos periódicos |
-| Isolate | CPU pesado |
+1. Generar APK
+2. Subir a Firebase App Distribution
+3. Asignar testers
+4. Instalar la app
+5. Probar actualización
+
+---
+
+## 🛠️ Generación del APK
+
+```bash
+flutter build apk --release
