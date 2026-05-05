@@ -119,7 +119,7 @@ class _TallerAsincroniaScreenState extends State<TallerAsincroniaScreen> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       appBar: AppBar(
-        title: const Text("Asincronía en Flutter" " 1.0.0+1" , style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
+        title: const Text("Asincronía en Flutter" " 1.0.0+2" , style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
         backgroundColor: scaffoldBg,
         elevation: 0,
         centerTitle: true,
