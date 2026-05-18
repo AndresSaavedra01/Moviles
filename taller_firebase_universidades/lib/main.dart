@@ -1,10 +1,22 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
+import 'package:taller_jwt/views/categoria_fb/universidad_fb_form_view.dart';
+import 'package:taller_jwt/views/categoria_fb/universidad_fb_list_view.dart';
 
+
+import 'firebase_options.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
+  // Cargar variables de entorno
+  await dotenv.load(fileName: ".env");
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -17,11 +29,11 @@ class MyApp extends StatelessWidget {
       title: 'App Registro de Clases',
       debugShowCheckedModeBanner: false,
 
-      // Configuración del tema global
       theme: ThemeData(
         useMaterial3: true,
-        primarySwatch: Colors.blue,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+        ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.grey.shade100,
@@ -35,38 +47,53 @@ class MyApp extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.blue, width: 2),
+            borderSide: const BorderSide(
+              color: Colors.blue,
+              width: 2,
+            ),
           ),
         ),
       ),
-
-      // Configuración de GoRouter
-      routerConfig: _router,
+      routerConfig: appRouter,
     );
   }
 }
 
+// ================= ROUTER =================
 
-final GoRouter _router = GoRouter(
-  initialLocation: '/',
-
-  // Lógica de redirección para proteger rutas
-  redirect: (BuildContext context, GoRouterState state) async {
-
-
-    // Verificamos a qué pantalla intenta ir el usuario
-    final bool isGoingToLogin = state.matchedLocation == '/login';
-    final bool isGoingToRegister = state.matchedLocation == '/register';
-
-    // 1. Si NO está logueado y NO va ni al login ni al registro, lo mandamos al login
-
-
-    // 3. De lo contrario, dejar que continúe a donde iba
-    return null;
-  },
-
-// En la configuración de rutas (dentro de routes: [...])
+final GoRouter appRouter = GoRouter(
+  initialLocation: '/universidadesfb', // Actualizado
 
   routes: [
+
+    // ================= LISTAR =================
+    GoRoute(
+      path: '/universidadesfb',
+      name: 'universidadesfb',
+      builder: (context, state) {
+        return const UniversidadFbListView();
+      },
+    ),
+
+    // ================= CREAR =================
+    GoRoute(
+      path: '/universidadesfb/create',
+      name: 'universidadesfb.create',
+      builder: (context, state) {
+        return const UniversidadFbFormView();
+      },
+    ),
+
+    // ================= EDITAR =================
+    GoRoute(
+      path: '/universidadesfb/edit/:id',
+      name: 'universidadesfb.edit',
+      builder: (context, state) {
+        final String id = state.pathParameters['id']!;
+        return UniversidadFbFormView(
+          id: id,
+        );
+      },
+    ),
   ],
 );
