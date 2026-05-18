@@ -1,1 +1,47 @@
 /.idea
+
+# Miscellaneous
+taller_firebase_universidades/*.class
+taller_firebase_universidades/*.log
+taller_firebase_universidades/*.pyc
+taller_firebase_universidades/*.swp
+taller_firebase_universidades/.DS_Store
+taller_firebase_universidades/.atom/
+taller_firebase_universidades/.build/
+taller_firebase_universidades/.buildlog/
+taller_firebase_universidades/.history
+taller_firebase_universidades/.svn/
+taller_firebase_universidades/.swiftpm/
+taller_firebase_universidades/migrate_working_dir/
+
+# IntelliJ related
+taller_firebase_universidades/*.iml
+taller_firebase_universidades/*.ipr
+taller_firebase_universidades/*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+taller_firebase_universidades/**/doc/api/
+taller_firebase_universidades/**/ios/Flutter/.last_build_id
+taller_firebase_universidades/.dart_tool/
+taller_firebase_universidades/.flutter-plugins-dependencies
+taller_firebase_universidades/.pub-cache/
+taller_firebase_universidades/.pub/
+taller_firebase_universidades/build/
+taller_firebase_universidades/coverage/
+
+# Symbolication related
+taller_firebase_universidades/app.*.symbols
+
+# Obfuscation related
+taller_firebase_universidades/app.*.map.json
+
+# Android Studio will place build artifacts here
+taller_firebase_universidades/android/app/debug
+taller_firebase_universidades/android/app/profile
+taller_firebase_universidades/android/app/release
